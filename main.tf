@@ -1,27 +1,15 @@
+#main.tf 
 
-
-# Configure the Microsoft Azure Provider
-provider "azurerm" {
-  features {}
-}
-resource "azurerm_resource_group" "RG" {
-  name     = "TestResourcegroup"
-  location = "West Europe"
+provider "aws" {
+  region     = "eu-central-1"
+  shared_credentials_files = /*your shared access key*/
 }
 
-resource "azurerm_storage_account" "storage" {
-  name                     = "storagetest1453"
-  resource_group_name      = azurerm_resource_group.RG.name
-  location                 = azurerm_resource_group.RG.location
-  account_tier             = "Standard"
-  account_replication_type = "GRS"
 
-  tags = {
-    environment = "staging"
-  }
+resource "aws_instance" "example" {
+  ami = "ami-0767046d1677be5a0"
+  instance_type = "t2.micro"
+  vpc_security_group_ids = [aws_security_group.main.id]
+  key_name= "aws_key"
+  user_data     =  /*the file wanted to be pre installed*/
 }
-variable "instance_type" {
-    type = string
-    description = "instance type t2.micro"
-    default = "t2.micro"
-  }
